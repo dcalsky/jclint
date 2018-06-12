@@ -1,0 +1,18 @@
+{
+  "name": "jclint",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:dcalsky/jclint.git",
+  "author": "dcalsky <dcalsky@163.com>",
+  "license": "MIT",
+  "scripts": {
+    "compile": "jison ./src/calculator.jison",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "jison": "^0.4.18"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}
