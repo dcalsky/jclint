@@ -12,6 +12,7 @@
 ','                         return ',';
 '('                         return '(';
 ')'                         return ')';
+^\#.*                       ;
 [ \n\t]                     ;
 <<EOF>>                     return 'EOF'
 .                           return 'INVALID';
