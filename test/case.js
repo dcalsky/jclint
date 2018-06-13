@@ -8,18 +8,16 @@ const caseFolder = path.join(__dirname, "cases");
 const filenames = fs.readdirSync(caseFolder);
 
 function exec(input) {
-  return parser.parse(input);
+  parser.parse(input);
+  return true;
 }
 
 describe("Cases", function() {
   filenames.forEach(name => {
-    it("should pass cases", function() {
+    it("should pass cases without error", function(done) {
       fs.readFile(path.resolve(caseFolder, name), (err, data) => {
-        try {
-          exec(data.toString());
-        } catch (e) {
-          throw Error(e);
-        }
+        exec(data.toString());
+        done()
       });
     });
   });
