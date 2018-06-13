@@ -5,9 +5,8 @@
 '//'                        return '//';
 '/*'                        ;
 (JOB|EXEC|DD)               return 'TYPE';
-^[A-Z][A-Z0-9]{0,7}         return 'NAME';
+^[A-Z][A-Z0-9]{0,7}         return 'IDENT';
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
-[a-zA-Z]+                   return 'IDENT';
 [\'\"].*?[\'\"]             return 'STRING';
 '='                         return '=';
 ','                         return ',';
@@ -18,24 +17,26 @@
 .                           return 'INVALID';
 
 /lex
+%left ','
 %%
 
 E
-    : '//' NAME TYPE ARG ',' KWARGS E
+    : '//' IDENT TYPE ARG KWARGS E
     | EOF
     ;
 
 
 KWARGS
-    : NAME '=' ARG ',' KWARGS
-    | NAME '=' ARG
-    | IDENT '=' ARG
+    : ',' IDENT '=' ARG KWARGS
+    | ',' IDENT '=' ARG
+    |
     ;
 
 ARG
     : '(' ARG ')'
     | ARG ',' ARG
+    | IDENT
     | STRING
     | NUMBER
-    | 
+    |
     ;
