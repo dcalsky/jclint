@@ -122,3 +122,8 @@ $RECYCLE.BIN/
 
 # Jetbrains
 .idea/
+
+# Custom
+
+dist/*
+!dist/.gitkeep

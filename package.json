@@ -6,8 +6,8 @@
   "author": "dcalsky <dcalsky@163.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "jison ./src/jcl.jison",
-    "test": "mocha"
+    "compile": "jison ./src/jcl.jison -o dist/jcl.js",
+    "test": "npm run compile && mocha"
   },
   "dependencies": {
     "jison": "^0.4.18"
