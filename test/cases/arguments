@@ -12,4 +12,8 @@
 //ST008 JOB ,SYSTEM,CLASS=(0,0) # notation
 //ST008 JOB ,SYSTEM,CLASS=(TASK,0) #notation
 //ST008 JOB ,SYSTEM,CLASS=(,0)        # notation
-//ST008 JOB ,SYSTEM,CLASS=(0,(0,0)) #    n otation 
+//ST008 JOB ,SYSTEM,CLASS=(0,(0,0)) #  ####  n otation 
+
+//ST018A JOB 2006,W.I.L.L.I.A.M,CLASS=(0,(0,0)) # dots in the position argument
+
+//ACCT2 JOB A23,REGION=2M,CLASS=(0,(0,0)) # value of the keyword argument
