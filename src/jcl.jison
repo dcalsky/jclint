@@ -23,13 +23,20 @@
 %%
 
 E
-    : NEWLINE E
-    | '//' IDENT TYPE ARG ',' KWARGS E
-    | '//' IDENT TYPE KWARGS E
-    | '//' IDENT TYPE ARG E
-    | EOF
+    : e EOF
     ;
 
+e
+    : '//' IDENT TYPE ARGS
+    | e NEWLINE e
+    |
+    ;
+
+ARGS
+    : ARG ',' KWARGS
+    | KWARGS
+    | ARG
+    ;
 
 KWARGS
     : KWARGS ',' NEWLINE LINE_FEED
