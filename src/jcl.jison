@@ -5,10 +5,11 @@
 '//'                        return '//';
 '/*'                        ;
 (JOB|EXEC|DD)               return 'TYPE';
-^[A-Z][A-Z0-9]{0,7}         return 'NAME';
+^[@#$A-Z][A-Z0-9]{0,7}      return 'NAME';
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
 [a-zA-Z]+                   return 'IDENT';
 [\'\"].*?[\'\"]             return 'STRING';
+IEFBR14                     return 'VALUE';
 '='                         return '=';
 ','                         return ',';
 '('                         return '(';
@@ -22,6 +23,7 @@
 
 E
     : '//' NAME TYPE ARG ',' KWARGS E
+    | '//' NAME TYPE KWARGS E
     | EOF
     ;
 
@@ -35,7 +37,7 @@ KWARGS
 ARG
     : '(' ARG ')'
     | ARG ',' ARG
+    | VALUE
     | STRING
     | NUMBER
-    | 
     ;
