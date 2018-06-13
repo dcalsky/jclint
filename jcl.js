@@ -72,12 +72,12 @@
   }
 */
 var jcl = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,2],$V1=[1,3],$V2=[1,12],$V3=[1,13],$V4=[1,8],$V5=[1,9],$V6=[1,10],$V7=[1,11],$V8=[4,8,10,14],$V9=[1,22],$Va=[4,10];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,2],$V1=[1,3],$V2=[1,4],$V3=[4,5,9,11],$V4=[2,15],$V5=[1,11],$V6=[1,10],$V7=[1,12],$V8=[1,13],$V9=[1,17],$Va=[1,19],$Vb=[2,12],$Vc=[1,20],$Vd=[4,5,9,11,15],$Ve=[1,25];
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"E":3,"//":4,"NAME":5,"TYPE":6,"ARG":7,",":8,"KWARGS":9,"EOF":10,"=":11,"IDENT":12,"(":13,")":14,"VALUE":15,"STRING":16,"NUMBER":17,"$accept":0,"$end":1},
-terminals_: {2:"error",4:"//",5:"NAME",6:"TYPE",8:",",10:"EOF",11:"=",12:"IDENT",13:"(",14:")",15:"VALUE",16:"STRING",17:"NUMBER"},
-productions_: [0,[3,7],[3,5],[3,1],[9,5],[9,3],[9,3],[7,3],[7,3],[7,1],[7,1],[7,1]],
+symbols_: {"error":2,"E":3,"NEWLINE":4,"//":5,"IDENT":6,"TYPE":7,"ARG":8,",":9,"KWARGS":10,"EOF":11,"LINE_FEED":12,"=":13,"(":14,")":15,"STRING":16,"NUMBER":17,"$accept":0,"$end":1},
+terminals_: {2:"error",4:"NEWLINE",5:"//",6:"IDENT",7:"TYPE",9:",",11:"EOF",13:"=",14:"(",15:")",16:"STRING",17:"NUMBER"},
+productions_: [0,[3,2],[3,7],[3,5],[3,5],[3,1],[10,4],[10,3],[10,3],[12,2],[8,3],[8,3],[8,1],[8,1],[8,1],[8,0]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -85,8 +85,8 @@ var $0 = $$.length - 1;
 switch (yystate) {
 }
 },
-table: [{3:1,4:$V0,10:$V1},{1:[3]},{5:[1,4]},{1:[2,3]},{6:[1,5]},{5:$V2,7:6,9:7,12:$V3,13:$V4,15:$V5,16:$V6,17:$V7},{8:[1,14]},{3:15,4:$V0,10:$V1},{7:16,13:$V4,15:$V5,16:$V6,17:$V7},o($V8,[2,9]),o($V8,[2,10]),o($V8,[2,11]),{11:[1,17]},{11:[1,18]},{5:$V2,7:20,9:19,12:$V3,13:$V4,15:$V5,16:$V6,17:$V7},{1:[2,2]},{8:$V9,14:[1,21]},{7:23,13:$V4,15:$V5,16:$V6,17:$V7},{7:24,13:$V4,15:$V5,16:$V6,17:$V7},{3:25,4:$V0,10:$V1},o([4,10,14],[2,8],{8:$V9}),o($V8,[2,7]),{7:20,13:$V4,15:$V5,16:$V6,17:$V7},o($Va,[2,5],{8:[1,26]}),o($Va,[2,6],{8:$V9}),{1:[2,1]},{5:$V2,7:20,9:27,12:$V3,13:$V4,15:$V5,16:$V6,17:$V7},o($Va,[2,4])],
-defaultActions: {3:[2,3],15:[2,2],25:[2,1]},
+table: [{3:1,4:$V0,5:$V1,11:$V2},{1:[3]},{3:5,4:$V0,5:$V1,11:$V2},{6:[1,6]},{1:[2,5]},{1:[2,1]},{7:[1,7]},o($V3,$V4,{8:8,10:9,6:$V5,14:$V6,16:$V7,17:$V8}),{3:15,4:$V0,5:$V1,9:[1,14],11:$V2},{3:16,4:$V0,5:$V1,9:$V9,11:$V2},o([9,15],$V4,{8:18,6:$Va,14:$V6,16:$V7,17:$V8}),o($V3,$Vb,{13:$Vc}),o($Vd,[2,13]),o($Vd,[2,14]),o($V3,$V4,{10:21,8:22,6:$V5,14:$V6,16:$V7,17:$V8}),{1:[2,4]},{1:[2,3]},{4:[1,23],6:$Ve,10:24},{9:[1,27],15:[1,26]},o($Vd,$Vb),o($V3,$V4,{8:28,6:$Va,14:$V6,16:$V7,17:$V8}),{3:29,4:$V0,5:$V1,9:$V9,11:$V2},o($Vd,[2,11]),{5:[1,31],12:30},o($V3,[2,7]),{13:$Vc},o($Vd,[2,10]),o($Vd,$V4,{8:22,6:$Va,14:$V6,16:$V7,17:$V8}),o($V3,[2,8]),{1:[2,2]},o($V3,[2,6]),{6:$Ve,10:32},o([4,5,11],[2,9],{9:$V9})],
+defaultActions: {4:[2,5],5:[2,1],15:[2,4],16:[2,3],29:[2,2]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -561,39 +561,39 @@ options: {},
 performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
-case 0:return 4;
+case 0:return 5;
 break;
 case 1:;
 break;
-case 2:return 6;
+case 2:return 7;
 break;
-case 3:return 5;
+case 3:return 6;
 break;
 case 4:return 17;
 break;
-case 5:return 12;
+case 5:return 16;
 break;
-case 6:return 16;
+case 6:return 13;
 break;
-case 7:return 15;
+case 7:return 9;
 break;
-case 8:return 11;
+case 8:return 14;
 break;
-case 9:return 8;
+case 9:return 15;
 break;
-case 10:return 13;
+case 10:return 4;
 break;
-case 11:return 14;
+case 11:; /* skip comment */
 break;
-case 12:;
+case 12:; /* skip whitespace */
 break;
-case 13:return 10
+case 13:return 11
 break;
 case 14:return 'INVALID';
 break;
 }
 },
-rules: [/^(?:\/\/)/,/^(?:\/\*)/,/^(?:(JOB|EXEC|DD))/,/^(?:^[@#$A-Z][A-Z0-9]{0,7})/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:[a-zA-Z]+)/,/^(?:[\'\"].*?[\'\"])/,/^(?:IEFBR14\b)/,/^(?:=)/,/^(?:,)/,/^(?:\()/,/^(?:\))/,/^(?:[ \n\t])/,/^(?:$)/,/^(?:.)/],
+rules: [/^(?:\/\/)/,/^(?:\/\*)/,/^(?:(JOB|EXEC|DD))/,/^(?:[A-Z0-9\.]+)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:[\'\"].*?[\'\"])/,/^(?:=)/,/^(?:,)/,/^(?:\()/,/^(?:\))/,/^(?:\n)/,/^(?:^#.*)/,/^(?:[\s]+)/,/^(?:$)/,/^(?:.)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],"inclusive":true}}
 });
 return lexer;

@@ -5,39 +5,47 @@
 '//'                        return '//';
 '/*'                        ;
 (JOB|EXEC|DD)               return 'TYPE';
-^[@#$A-Z][A-Z0-9]{0,7}      return 'NAME';
+[A-Z0-9\.]+                 return 'IDENT';
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
-[a-zA-Z]+                   return 'IDENT';
 [\'\"].*?[\'\"]             return 'STRING';
-IEFBR14                     return 'VALUE';
 '='                         return '=';
 ','                         return ',';
 '('                         return '(';
 ')'                         return ')';
-[ \n\t]                     ;
+\n                          return 'NEWLINE';
+^\#.*                       ; /* skip comment */
+[\s]+                       ; /* skip whitespace */
 <<EOF>>                     return 'EOF'
 .                           return 'INVALID';
 
 /lex
+%left ',' '='
 %%
 
 E
-    : '//' NAME TYPE ARG ',' KWARGS E
-    | '//' NAME TYPE KWARGS E
+    : NEWLINE E
+    | '//' IDENT TYPE ARG ',' KWARGS E
+    | '//' IDENT TYPE KWARGS E
+    | '//' IDENT TYPE ARG E
     | EOF
     ;
 
 
 KWARGS
-    : NAME '=' ARG ',' KWARGS
-    | NAME '=' ARG
+    : KWARGS ',' NEWLINE LINE_FEED
+    | KWARGS ',' KWARGS
     | IDENT '=' ARG
+    ;
+
+LINE_FEED
+    : '//' KWARGS
     ;
 
 ARG
     : '(' ARG ')'
     | ARG ',' ARG
-    | VALUE
+    | IDENT
     | STRING
     | NUMBER
+    |
     ;
