@@ -12,25 +12,32 @@
 ','                         return ',';
 '('                         return '(';
 ')'                         return ')';
-^\#.*                       ;
-[ \n\t]                     ;
+\n                        return 'NEWLINE';
+^\#.*                       ; /* skip comment */
+[\s]+                         ; /* skip whitespace */
 <<EOF>>                     return 'EOF'
 .                           return 'INVALID';
 
 /lex
-%left ','
+%left ',' '='
 %%
 
 E
-    : '//' IDENT TYPE ARG KWARGS E
+    : NEWLINE E
+    | '//' IDENT TYPE ARG ',' KWARGS E
+    | '//' IDENT TYPE ARG E
     | EOF
     ;
 
 
 KWARGS
-    : ',' IDENT '=' ARG KWARGS
-    | ',' IDENT '=' ARG
-    |
+    : KWARGS ',' NEWLINE LINE_FEED
+    | KWARGS ',' KWARGS
+    | IDENT '=' ARG
+    ;
+
+LINE_FEED
+    : '//' KWARGS
     ;
 
 ARG
