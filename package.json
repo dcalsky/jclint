@@ -6,7 +6,7 @@
   "author": "dcalsky <dcalsky@163.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "jison ./src/calculator.jison",
+    "compile": "jison ./src/jcl.jison",
     "test": "mocha"
   },
   "dependencies": {
