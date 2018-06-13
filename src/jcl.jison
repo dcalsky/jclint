@@ -12,9 +12,9 @@
 ','                         return ',';
 '('                         return '(';
 ')'                         return ')';
-\n                        return 'NEWLINE';
+\n                          return 'NEWLINE';
 ^\#.*                       ; /* skip comment */
-[\s]+                         ; /* skip whitespace */
+[\s]+                       ; /* skip whitespace */
 <<EOF>>                     return 'EOF'
 .                           return 'INVALID';
 
@@ -25,6 +25,7 @@
 E
     : NEWLINE E
     | '//' IDENT TYPE ARG ',' KWARGS E
+    | '//' IDENT TYPE KWARGS E
     | '//' IDENT TYPE ARG E
     | EOF
     ;
