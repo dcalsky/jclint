@@ -1,5 +1,6 @@
 //ST008 JOB ,SYSTEM,CLASS=(0,0)
 //ST008 JOB ,SYSTEM,CLASS=(TASK,0)
+//ST008 JOB JOB JOB NOTIFY=ST007 MSGLEVEL=(1,1)
 //******************
 //*IT'S AN EXAMPLE*
 //******************
@@ -8,7 +9,7 @@
 
 
 //**************Comment Start **************//
-//* Some
-//* Some
-//* Some
+//* ASD
+//* ASD
+//* ASD
 //*

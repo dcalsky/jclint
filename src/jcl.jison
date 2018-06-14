@@ -2,24 +2,25 @@
 
 %%
 
-\/\/\*.*                    ; /* skip whole line comment */
-'//'                        return '//';
-'/*'                        ;
-(JOB|EXEC|DD)               return 'TYPE';
-[A-Z0-9\.\#\$\@]+           return 'IDENT';
-[0-9]+("."[0-9]+)?\b        return 'NUMBER';
-[\'\"].*?[\'\"]             return 'STRING';
-'='                         return '=';
-','                         return ',';
-'('                         return '(';
-')'                         return ')';
-\n                          return 'NEWLINE';
-[\s]+                       ; /* skip whitespace */
-<<EOF>>                     return 'EOF'
-.                           return 'INVALID';
+\/\/\*.*                            ; /* skip whole line comment */
+'/*'                                ;
+[\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
+\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s?  return 'DEFINE';
+[0-9]+("."[0-9]+)?\b                return 'NUMBER';
+'='                                 return '=';
+','                                 return ',';
+'('                                 return '(';
+')'                                 return ')';
+\'                                  return 'SQUOTE';
+\"                                  return 'DQUOTE';
+\n                                  return 'NEWLINE';
+\/\/\s+                             return 'SPACES';
+\s.*                                return 'COMMENT';
+<<EOF>>                             return 'EOF';
 
 /lex
 %left ',' '='
+%left NEWLINE
 %%
 
 E
@@ -27,32 +28,33 @@ E
     ;
 
 e
-    : '//' IDENT TYPE ARGS
+    : DEFINE ARGS 
     | e NEWLINE e
     |
     ;
 
 ARGS
-    : ARG ',' KWARGS
+    : ARGS COMMENT 
+    | ARG ',' KWARGS
     | KWARGS
     | ARG
     ;
 
 KWARGS
-    : KWARGS ',' NEWLINE LINE_FEED
+    : KWARGS ',' LINE_FEED
     | KWARGS ',' KWARGS
     | IDENT '=' ARG
     ;
 
 LINE_FEED
-    : '//' KWARGS
+    : NEWLINE SPACES KWARGS
     ;
 
 ARG
-    : '(' ARG ')'
-    | ARG ',' ARG
-    | IDENT
-    | STRING
-    | NUMBER
+    : '(' ARG ')' 
+    | ARG ',' ARG 
+    | SQUOTE IDENT SQUOTE 
+    | DQUOTE IDENT DQUOTE 
+    | IDENT 
     |
     ;
