@@ -39,7 +39,7 @@
 %%
 
 E
-    : NEWLINE E
+    : E NEWLINE E
     | '//' IDENT TYPE ARG ',' KWARGS E { 
             // check job name and output whether the job name is illegal
             if (!checkJobName($2)) {
@@ -65,6 +65,7 @@ E
         }
     | '//' IDENT TYPE ARG E
     | EOF
+    |
     ;
 
 
