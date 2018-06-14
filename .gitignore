@@ -128,3 +128,4 @@ $RECYCLE.BIN/
 dist/*
 !dist/.gitkeep
 src/jcl.js
+jcl.js
