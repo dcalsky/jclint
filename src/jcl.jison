@@ -64,7 +64,7 @@ E
             }
         }
     | '//' IDENT TYPE ARG E
-    | EOF
+    | E EOF
     |
     ;
 
