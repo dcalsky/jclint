@@ -5,7 +5,7 @@
 '//'                        return '//';
 '/*'                        ;
 (JOB|EXEC|DD)               return 'TYPE';
-[A-Z0-9\.]+                 return 'IDENT';
+[A-Z0-9\.\#\$\@]+                 return 'IDENT';
 [0-9]+("."[0-9]+)?\b        return 'NUMBER';
 [\'\"].*?[\'\"]             return 'STRING';
 '='                         return '=';
