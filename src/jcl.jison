@@ -18,9 +18,12 @@
 \s.*                                return 'COMMENT';
 <<EOF>>                             return 'EOF';
 
+
 /lex
 %left ',' '='
 %left NEWLINE
+%nonassoc COMMENT, LINE_FEED
+
 %%
 
 E
@@ -28,33 +31,38 @@ E
     ;
 
 e
-    : DEFINE ARGS 
-    | e NEWLINE e
+    : e NEWLINE e
+    | e COMMENT
+    | DEFINE ARGS 
     |
     ;
 
 ARGS
-    : ARGS COMMENT 
-    | ARG ',' KWARGS
+    : ARG ',' KWARGS
     | KWARGS
     | ARG
     ;
 
+
 KWARGS
-    : KWARGS ',' LINE_FEED
-    | KWARGS ',' KWARGS
-    | IDENT '=' ARG
+    : KWARGS ',' KWARGS
+    | COMMENT KWARGS 
+    | LINE_FEED KWARGS 
+    | IDENT '=' ARG 
     ;
 
 LINE_FEED
-    : NEWLINE SPACES KWARGS
+    : NEWLINE SPACES
     ;
 
 ARG
-    : '(' ARG ')' 
-    | ARG ',' ARG 
+    : ARG ',' ARG
+    | COMMENT ARG
+    | LINE_FEED ARG
+    | LINE_FEED KWARGS
+    | '(' ARG ')'
     | SQUOTE IDENT SQUOTE 
     | DQUOTE IDENT DQUOTE 
-    | IDENT 
+    | IDENT
     |
     ;

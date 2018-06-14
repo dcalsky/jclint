@@ -1,3 +1,22 @@
 //AS JOB ('ASD','123'),CLASS='213',
 //                      BILIBILI=123
 //AS JOB ('ASD','123'),CLASS='213'
+
+//STO38 JOB DD,
+//  JOB
+
+//STO38 JOB DD,
+//  JOB,
+// CXZC
+
+//STO38 JOB JOB,
+//  NOTIFY=ST038,
+//     CLASS=JOB
+
+//STO38 JOB DD,
+//  JOB, # NOTATION
+//     CLASS=JOB # NOTATION1
+
+//JOB JOB JOB=(EXEC,JOB), ,,,,,,MM.,.,.,.,.,.,JOB
+//   NOTIFY=NOTIFY, ,,,,,,,, // #### 
+// CLASS=JOB
