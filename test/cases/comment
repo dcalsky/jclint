@@ -13,3 +13,7 @@
 //* ASD
 //* ASD
 //*
+
+//JOB JOB JOB=(EXEC,JOB), ,,,,,,MM.,.,.,.,.,.,JOB
+//   NOTIFY=NOTIFY, ,,,,,,,, // #### 
+// CLASS=JOB
