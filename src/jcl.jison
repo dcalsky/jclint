@@ -28,10 +28,11 @@ E
     ;
 
 e
-    : e NEWLINE e {$$ = $1.concat($3)}
+    : e NEWLINE e {$$ = $1.concat($3 || [])}
     | DEFINE ARGS {$$ = [{
         meta: $1,
-        children: $2
+        children: $2,
+        position: @1
     }]}
     |
     ;
@@ -55,15 +56,17 @@ ARGS
 
 
 KW_ARGS
-    : KW_ARGS ',' KW {$$ = Object.assign($1, $3)}
-    | KW_ARGS ',' LINE_FEED KW {$$ = Object.assign($1, $4)}
+    : KW_ARGS ',' KW {$$ = $1.concat($3)}
+    | KW_ARGS ',' LINE_FEED KW {$$ = $1.concat($4)}
     | KW {$$ = $1}
     ;
 
 KW
-    : IDENT '=' ARG {$$ = {
-        [$1.toString()]: $3
-    }}
+    : IDENT '=' ARG {$$ = [{
+        key: $1,
+        val: $3,
+        position: @1
+    }]}
     ;
 
 
@@ -91,6 +94,9 @@ TUPLE
 VAL
     : SQUOTE IDENT SQUOTE {$$ = $1}
     | DQUOTE IDENT DQUOTE {$$ = $1}
-    | IDENT {$$ = $1}
+    | IDENT {$$ = {
+      text: $1,
+      position: @1
+    }}
     ;
 
