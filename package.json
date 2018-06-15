@@ -10,7 +10,8 @@
     "test": "npm run compile && mocha"
   },
   "dependencies": {
-    "jison": "^0.4.18"
+    "jison": "^0.4.18",
+    "joi": "^13.4.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0"
