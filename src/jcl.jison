@@ -2,8 +2,8 @@
 
 %%
 
-\/\/\*.*                            ; /* skip whole line comment */
 '/*'                                ;
+\/\/\*.*                            ; /* skip whole line comment */
 [\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
 \/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s   return 'DEFINE';
 '='                                 return '=';
@@ -24,20 +24,23 @@
 %%
 
 E
-    : e EOF
+    : e EOF {return $1}
     ;
 
 e
-    : e NEWLINE e
-    | DEFINE ARGS {$$ = {
+    : e NEWLINE e {$$ = $1.concat($3)}
+    | DEFINE ARGS {$$ = [{
         meta: $1,
         children: $2
-    }}
+    }]}
     |
     ;
 
 ARGS
-    : PS_ARGS ',' LINE_FEED KW_ARGS
+    : PS_ARGS ',' LINE_FEED KW_ARGS {$$ = {
+        ps_args: $1,
+        kw_args: $4
+    }}
     | PS_ARGS ',' KW_ARGS {$$ = {
         ps_args: $1,
         kw_args: $3
@@ -52,40 +55,42 @@ ARGS
 
 
 KW_ARGS
-    : KW_ARGS ',' KW
-    | KW_ARGS ',' LINE_FEED KW
-    | KW
+    : KW_ARGS ',' KW {$$ = Object.assign($1, $3)}
+    | KW_ARGS ',' LINE_FEED KW {$$ = Object.assign($1, $4)}
+    | KW {$$ = $1}
     ;
 
 KW
-    : IDENT '=' ARG 
+    : IDENT '=' ARG {$$ = {
+        [$1.toString()]: $3
+    }}
     ;
 
 
 
 PS_ARGS
-    : PS_ARGS ',' ARG
-    | PS_ARGS ',' LINE_FEED ARG
-    | ARG
+    : PS_ARGS ',' ARG {$$ = $1.concat($3)}
+    | PS_ARGS ',' LINE_FEED ARG {$$ = $1.concat($4)}
+    | ARG {$$ = [$1]}
     ;
 
 ARG
-    : '(' TUPLE ')'
-    | VAL
-    |
+    : '(' TUPLE ')' {$$ = [$2]}
+    | VAL {$$ = [$1]}
+    | {$$ = null}
     ;
 
 TUPLE
-    : TUPLE ',' TUPLE
-    | '(' TUPLE ')' 
-    | VAL
-    |
+    : TUPLE ',' TUPLE {$$ = $1.concat($3)}
+    | '(' TUPLE ')' {$$ = [$2]}
+    | VAL {$$ = [$1]}
+    | {$$ = [null]}
     ;
 
 
 VAL
-    : SQUOTE IDENT SQUOTE
-    | DQUOTE IDENT DQUOTE 
-    | IDENT
+    : SQUOTE IDENT SQUOTE {$$ = $1}
+    | DQUOTE IDENT DQUOTE {$$ = $1}
+    | IDENT {$$ = $1}
     ;
 
