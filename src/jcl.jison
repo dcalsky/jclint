@@ -6,24 +6,20 @@
 '/*'                                ;
 [\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
 \/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s?  return 'DEFINE';
-[0-9]+("."[0-9]+)?\b                return 'NUMBER';
 '='                                 return '=';
 ','                                 return ',';
 '('                                 return '(';
 ')'                                 return ')';
 \'                                  return 'SQUOTE';
 \"                                  return 'DQUOTE';
-\n                                  return 'NEWLINE';
-\/\/\s+                             return 'SPACES';
+\n\/\/\s+                           return 'LINE_FEED';
+\n                                  return 'NEWLINE'
 \s.*                                return 'COMMENT';
 <<EOF>>                             return 'EOF';
 
 
 /lex
 %left ',' '='
-%left NEWLINE
-%nonassoc COMMENT, LINE_FEED
-
 %%
 
 E
@@ -33,36 +29,60 @@ E
 e
     : e NEWLINE e
     | e COMMENT
-    | DEFINE ARGS 
+    | DEFINE ARGS
     |
     ;
 
 ARGS
-    : ARG ',' KWARGS
-    | KWARGS
-    | ARG
+    : PS_ARGS ',' KW_ARGS
+    | PS_ARGS
+    | KW_ARGS
     ;
 
 
-KWARGS
-    : KWARGS ',' KWARGS
-    | COMMENT KWARGS 
-    | LINE_FEED KWARGS 
+KW_ARGS
+    : KW_ARGS ',' KW
+    | KW
+    ;
+
+KW
+    : COMMENT KW
+    | LINE_FEED KW 
     | IDENT '=' ARG 
     ;
 
-LINE_FEED
-    : NEWLINE SPACES
+
+PS_ARGS
+    : PS_ARGS ',' ARG
+    | ARG
     ;
 
 ARG
-    : ARG ',' ARG
-    | COMMENT ARG
+    : COMMENT ARG
     | LINE_FEED ARG
-    | LINE_FEED KWARGS
-    | '(' ARG ')'
-    | SQUOTE IDENT SQUOTE 
-    | DQUOTE IDENT DQUOTE 
-    | IDENT
+    | LINE_FEED KW
+    | '(' FRIST_TUPLE ')'
+    | VAL
     |
     ;
+
+FRIST_TUPLE
+    : TUPLE ',' TUPLE
+    | TUPLE
+    ;
+
+TUPLE
+    : TUPLE ',' TUPLE
+    | TUPLE ','
+    | '(' TUPLE ')' 
+    | VAL
+    |
+    ;
+
+
+VAL
+    : SQUOTE IDENT SQUOTE
+    | DQUOTE IDENT DQUOTE 
+    | IDENT
+    ;
+
