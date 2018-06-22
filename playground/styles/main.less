@@ -1,0 +1,40 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+.CodeMirror {
+  height: 100%;
+  border: 0;
+  width: 100%;
+  line-height: 25px;
+  font-size: 16px;
+  font-family: Consolas, Monaco, monospace;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.CodeMirror .CodeMirror-linenumber {
+  color: #d4cebd;
+  padding-left: 12px;
+}
+.canvas-mode .CodeMirror {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.error {
+  background: rgba(220, 50, 47, 0.1) !important;
+  z-index: 4;
+}
+
+.error-line {
+    background: #D32F2F !important; 
+}
