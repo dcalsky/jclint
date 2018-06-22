@@ -125,7 +125,9 @@ $RECYCLE.BIN/
 
 # Custom
 
-dist/*
+**/dist/*
 !dist/.gitkeep
 src/jcl.js
 jcl.js
+
+.cache

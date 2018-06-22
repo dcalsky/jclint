@@ -1,0 +1,18 @@
+{
+  "name": "jclint-playground",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "dcalsky",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel ./index.html"
+  },
+  "dependencies": {
+    "codemirror": "^5.39.0",
+    "less": "^3.0.4",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "parcel": "^1.9.2"
+  }
+}
