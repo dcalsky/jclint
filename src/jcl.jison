@@ -2,20 +2,21 @@
 
 %%
 
-'/*'                                ;
-\/\/\*.*                            ; /* skip whole line comment */
-[\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
-\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s   return 'DEFINE';
-'='                                 return '=';
-','                                 return ',';
-'('                                 return '(';
-')'                                 return ')';
-\'                                  return 'SQUOTE';
-\"                                  return 'DQUOTE';
-\n\/\/\s+                           return 'LINE_FEED';
-\n                                  return 'NEWLINE'
-\s.*                                ;
-<<EOF>>                             return 'EOF';
+'/*'                                        ;
+\/\/\*.*                                    ; /* skip whole line comment */
+[\'\"\#\$\@\.A-Z0-9\*]+                     return 'IDENT';
+\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s           return 'DEFINE';
+\*\s+                                       return '';
+'='                                         return '=';
+','                                         return ',';
+'('                                         return '(';
+')'                                         return ')';
+\'                                          return 'SQUOTE';
+\"                                          return 'DQUOTE';
+\n\/\/\s+                                   return 'LINE_FEED';
+\n                                          return 'NEWLINE'
+\s.*                                        ;
+<<EOF>>                                     return 'EOF';
 
 
 /lex
