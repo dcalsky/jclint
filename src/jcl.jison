@@ -33,7 +33,7 @@ e
     | DEFINE ARGS {$$ = [{
         meta: $1,
         children: $2,
-        position: @1
+        location: @1
     }]}
     |
     ;
@@ -66,7 +66,7 @@ KW
     : IDENT '=' ARG {$$ = [{
         key: $1,
         val: $3,
-        position: @1
+        location: @1
     }]}
     ;
 
@@ -97,7 +97,7 @@ VAL
     | DQUOTE IDENT DQUOTE {$$ = $1}
     | IDENT {$$ = {
       text: $1,
-      position: @1
+      location: @1
     }}
     ;
 
