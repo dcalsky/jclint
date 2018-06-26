@@ -2,8 +2,10 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var https = require('https'); 
 var querystring = require('querystring');  
+var cors = require('cors');
 var app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
