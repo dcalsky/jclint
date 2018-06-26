@@ -13,7 +13,23 @@ const KWS = {
     "TIME",
     "TYPRUN"
   ],
-  EXEC: ["PGM", "PROC", "ACCT", "ADDRSPC", "REGION", "TIME", "COND", "PARM"]
+  EXEC: ["PGM", "PROC", "ACCT", "ADDRSPC", "REGION", "TIME", "COND", "PARM"],
+  DD: [
+    "UNIT",
+    "VOLUME",
+    "SPACE",
+    "DISP",
+    "DCB",
+    "SYSOUT",
+    "SYSIN",
+    "DSNAME",
+    "JOBCAT",
+    "JOBLIB",
+    "STEPCAT",
+    "STEPLIB",
+    "DSN",
+    "DSNAME"
+  ]
 };
 
 class ParseError extends Error {
@@ -79,7 +95,6 @@ export default class Parser {
       const asts = this.parser.parse(source);
       for (let i = 0; i < asts.length; ++i) {
         const ast = asts[i];
-        console.log(ast);
         ast.meta = this.parseMeta(ast);
         this.parseArgs(ast.meta, ast.children);
       }
@@ -116,7 +131,7 @@ export default class Parser {
 
   parseMeta(ast) {
     const meta = this._getMeta(ast.meta);
-    if (meta.name.length > 8) {
+    if (!meta.name.split(".").every(name => name.length <= 8)) {
       throw new ParseError(
         "define",
         "Name length cannot be longer than 8 characters",
