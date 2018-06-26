@@ -8,6 +8,7 @@ import "./styles/3024-day.css";
 import "codemirror/addon/lint/lint.css";
 import "./styles/main.less";
 
+const correctMessage = "All going well!";
 class Editor {
   constructor(editorId, outputId, options) {
     const codeEditorOptions = {
@@ -38,6 +39,7 @@ class Editor {
       this.toggle_gutter_error(true);
       this.handleErrors(errors);
     } else {
+      this.update_output_message(correctMessage);
       this.toggle_gutter_error(false);
     }
   }
@@ -75,7 +77,7 @@ class Editor {
   }
   initEvents() {
     this.outputContainer = new Tooltip(this.$output, {
-      title: "All going well!",
+      title: correctMessage,
       trigger: "click"
     });
     this.outputContainer.show();
