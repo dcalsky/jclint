@@ -96,3 +96,11 @@
   text-decoration: underline;
   color: #a16a94 !important;
 }
+<<<<<<< HEAD
+=======
+
+.CodeMirror-selected {
+  background-color: #B0ECB7 !important;
+}
+
+>>>>>>> 277a1cfdd91b86e4807f53aab10a7d1e170ba358
