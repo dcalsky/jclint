@@ -10,10 +10,23 @@
 </head>
 
 <body>
+    <div class="tools">
+        <a class="logo" href="javascript:void(0)" onclick="" title="About nomnoml">
+            JCLINT
+        </a>
+
+        <a id="linkbutton" href="" title="Shareable link to this diagram">
+            <img src="./assets/upload.svg"> Upload
+        </a>
+        <a href="https://github.com/dcalsky/jclint" target="_blank" title="Github">
+            <img src="./assets/github.svg"> Github
+        </a>
+        <span id="tooltip"></span>
+    </div>
     <textarea id="editor"></textarea>
 
     <div id="output">
-        <img src="./assets/watermelon.png" alt="watermelon">
+        <img id="watermelon" src="./assets/watermelon.png" alt="watermelon">
     </div>
     <script src="./index.js"></script>
 </body>

@@ -2,6 +2,7 @@ import fs from "fs";
 import debounce from "lodash/debounce";
 import CodeMirror from "codemirror";
 import Parser from "../src/jcl.parser";
+import Tooltip from "tooltip.js";
 import "codemirror/lib/codemirror.css";
 import "./styles/3024-day.css";
 import "codemirror/addon/lint/lint.css";
@@ -52,6 +53,7 @@ class Editor {
         }
       );
       this.lineHandles.push(lineHandle);
+      this.update_output_message(err.message);
       this.codeEditor.addLineClass(lineHandle, "gutter", "error-line");
     });
   }
@@ -66,11 +68,20 @@ class Editor {
   toggle_gutter_error(status = true) {
     this.$gutter.classList.toggle("error", status);
   }
+  update_output_message(message) {
+    this.outputContainer.updateTitleContent(message);
+    this.outputContainer.show();
+  }
   initEvents() {
+    this.outputContainer = new Tooltip(this.$output, {
+      title: "All going well!",
+      trigger: "click"
+    });
+    this.outputContainer.show();
     this.codeEditor.on("changes", debounce(this.validate.bind(this), 500));
   }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  const editor = new Editor("editor", "output");
+  const editor = new Editor("editor", "watermelon");
 });
