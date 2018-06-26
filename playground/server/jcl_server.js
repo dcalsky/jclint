@@ -32,14 +32,15 @@ app.post('/auth', function (req, res) {
         }  
     }
     var response = res
+    var that = this
     var req = https.request(options, function(res) {  
         console.log('Status:', res.statusCode);  
         console.log('headers:', JSON.stringify(res.headers));  
         console.log('Cookie:', res.headers['set-cookie'][0].split(';')[0])
-        cookie = res.headers['set-cookie'][0].split(';')[0]
+        that.cookie = res.headers['set-cookie'][0].split(';')[0]
         res.setEncoding('utf-8'); 
 
-        response.send(cookie);
+        response.send(that.cookie);
         res.on('data', function(chun) {  
             // get cookies
             console.log('succuss')
@@ -120,6 +121,7 @@ app.post('/zos/job', function (req, res) {
                     // get data
                     var resJob = JSON.parse(chun);
                     var jobDetail = {
+                        rc: resJob.retcode,
                         jobname: resJob.jobname,
                         jobid: resJob.jobid,
                         url: resJob.url
@@ -159,6 +161,7 @@ app.post('/zos/job', function (req, res) {
                 // get data
                 var resJob = JSON.parse(chun);
                 var jobDetail = {
+                    rc: resJob.retcode,
                     jobname: resJob.jobname,
                     jobid: resJob.jobid,
                     url: resJob.url
@@ -176,6 +179,78 @@ app.post('/zos/job', function (req, res) {
         req.write(postData);  
         req.end();
     }   
+});
+// get status
+app.post('/zos/job/status', function (req, res) {
+    var path = '/zosmf' + req.body.url.split('/zosmf')[1];
+    var userid = req.body.username;
+    var password = req.body.password;
+    var response = res;
+    if (cookie == null || this.username != req.body.userid)  {
+        let promise = new Promise((resolve, reject) => {
+            var b = new Buffer(userid + ':' + password);
+            var base64string = b.toString('base64');
+            // console.log(base64string)
+            var options = {  
+                hostname: hostname,  
+                port: port,  
+                path: '/zosmf',  
+                rejectUnauthorized: false,
+                method: 'POST',  
+                headers:{
+                    'Authorization': 'Basic ' + base64string
+                }  
+            }
+            var req = https.request(options, function(res) {  
+                // console.log('Status:', res.statusCode);  
+                // console.log('headers:', JSON.stringify(res.headers));  
+                // console.log('Cookie:', res.headers['set-cookie'][0].split(';')[0])
+                console.log(res.headers)
+                var cookie = res.headers['set-cookie'][0].split(';')[0]
+                res.setEncoding('utf-8'); 
+                resolve(cookie)
+            });    
+            req.on('error',function(err) {  
+                reject(err)
+            });
+            req.end();
+        });
+        promise.then((cookie) => {
+            this.cookie = cookie;
+            console.log(cookie + path)
+            var options = {  
+                hostname: hostname,  
+                port: 8800,  
+                rejectUnauthorized: false,
+                path: path,  
+                method: 'GET',  
+                headers: {
+                    'cookie': cookie
+                }  
+            }
+            var response = res
+            var req = https.request(options, function(res) {  
+                // console.log('Status:', res.statusCode);  
+                // console.log('headers:', JSON.stringify(res.headers));  
+                res.setEncoding('utf-8');  
+                res.on('data', function(chun) {  
+                    console.info(chun);  
+                    var resJob = JSON.parse(chun);
+                    response.send(resJob.retcode);
+                });  
+                res.on('end', function() {  
+                    console.log('No more data in response.********');
+                });  
+            });    
+            req.on('error',function(err) {  
+                console.error(err);  
+            });
+            req.end();
+        }).catch((err) => {
+            console.log(err)
+        })
+       
+    }
 });
 
 // get the job status
@@ -273,7 +348,7 @@ app.get('/zos/job/:job_name/:job_id/files', function (req, res) {
     res.send('HELLO');
 });
  
-var server = app.listen(8084, function () {
+var server = app.listen(8083, function () {
 
     var host = server.address().address
     var port = server.address().port
