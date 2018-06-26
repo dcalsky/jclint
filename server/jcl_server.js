@@ -8,8 +8,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var hostname = '10.60.45.8'
+var username = ''
 var port = 8800
-var cookie = 'ltpaToken2=/7SwzNONpkfjvgOoo+qGiL1KPEjgJTmJuRipSA8JVgXTUqn6W1cqgezIe7bpmgmlto9KddXbQW8qVnpylwVCt9vBCCkE+vJDH2OGs+2NCsOTjKnCcShiqWQY5pjwELSVQeVuID+xJBeGK2bbOt3P2wzPo6kBh7cJka0xt1b8M4F7oAD8ielih5QIU1Cc8nC2THxFAJlUbrOjTK5+kr/GEbtp+S7yJTzy6I3zH2f/K+1E/f/V5s7wbM4dDV/QDLzmk2k6Xx/6siSJixnaZjM9WotAkRW8xvjxGJiZHWdyhZs92oMg1a8CErBZ1Oo3WmFb'
+var cookie = null
 
 // auth
 app.post('/auth', function (req, res) {
@@ -28,15 +29,18 @@ app.post('/auth', function (req, res) {
             'Authorization': 'Basic ' + base64string
         }  
     }
+    var response = res
     var req = https.request(options, function(res) {  
         console.log('Status:', res.statusCode);  
         console.log('headers:', JSON.stringify(res.headers));  
         console.log('Cookie:', res.headers['set-cookie'][0].split(';')[0])
         cookie = res.headers['set-cookie'][0].split(';')[0]
-        res.setEncoding('utf-8');  
+        res.setEncoding('utf-8'); 
+
+        response.send(cookie);
         res.on('data', function(chun) {  
             // get cookies
-            console.log(chun)
+            console.log('succuss')
         });  
         res.on('end', function() {  
 
@@ -46,43 +50,129 @@ app.post('/auth', function (req, res) {
         console.error(err);  
     });
     req.end();
-    res.send('HELLO');
 });
 
 
+// {
+//     "username": "155xxxxx',
+//     "password": "xxxxxx",
+//     "job": "xxxx"
+// }
 // post job
 app.post('/zos/job', function (req, res) {
-    console.log(req.body.content)
-    var postData = req.body.content;
-    var options = {  
-        hostname: hostname,  
-        port: 8800,  
-        path: '/zosmf/restjobs/jobs',  
-        rejectUnauthorized: false,
-        method: 'PUT',  
-        headers:{
-        'Content-Type':'text/plain',
-        'Cookie': cookie
-        }  
-    }
-    var req = https.request(options, function(res) {  
-        console.log('Status:', res.statusCode);  
-        console.log('headers:', JSON.stringify(res.headers));  
-        res.setEncoding('utf-8');  
-        res.on('data', function(chun) {  
-            // get data
-            console.log(chun);  
+    var job = req.body.job
+    var userid = req.body.username;
+    var password = req.body.password;
+    var response = res;
+    // if the cookie is no null and , then submit the job
+    if (cookie == null || this.username != req.body.userid) {
+        let promise = new Promise((resolve, reject) => {
+            var b = new Buffer(userid + ':' + password);
+            var base64string = b.toString('base64');
+            // console.log(base64string)
+            var options = {  
+                hostname: hostname,  
+                port: port,  
+                path: '/zosmf',  
+                rejectUnauthorized: false,
+                method: 'POST',  
+                headers:{
+                    'Authorization': 'Basic ' + base64string
+                }  
+            }
+            var req = https.request(options, function(res) {  
+                // console.log('Status:', res.statusCode);  
+                // console.log('headers:', JSON.stringify(res.headers));  
+                // console.log('Cookie:', res.headers['set-cookie'][0].split(';')[0])
+                var cookie = res.headers['set-cookie'][0].split(';')[0]
+                res.setEncoding('utf-8'); 
+                resolve(cookie)
+            });    
+            req.on('error',function(err) {  
+                reject(err)
+            });
+            req.end();
+        });
+        // await promise is wrong
+        promise.then((cookie) => {
+            this.cookie = cookie;
+            var postData = job;
+            // console.log(cookie)
+            var options = {  
+                hostname: hostname,  
+                port: 8800,  
+                path: '/zosmf/restjobs/jobs',  
+                rejectUnauthorized: false,
+                method: 'PUT',  
+                headers:{
+                'Content-Type':'text/plain',
+                'Cookie': cookie
+                }  
+            }
+            var req = https.request(options, function(res) {  
+                // console.log('Status:', res.statusCode);  
+                // console.log('headers:', JSON.stringify(res.headers));  
+                res.setEncoding('utf-8');  
+                res.on('data', function(chun) {  
+                    // get data
+                    var resJob = JSON.parse(chun);
+                    var jobDetail = {
+                        jobname: resJob.jobname,
+                        jobid: resJob.jobid,
+                        url: resJob.url
+                    }
+                    console.log(resJob); 
+                    response.send(JSON.stringify(jobDetail));
+                });  
+                res.on('end', function(err) { 
+                    
+                });  
+            });    
+            req.on('error',function(err) {  
+                console.error(err);  
+            });  
+            req.write(postData);  
+            req.end();
+        }).catch((err) => {
+            console.log(err)
+        })
+    } else {
+        var options = {  
+            hostname: hostname,  
+            port: 8800,  
+            path: '/zosmf/restjobs/jobs',  
+            rejectUnauthorized: false,
+            method: 'PUT',  
+            headers:{
+            'Content-Type':'text/plain',
+            'Cookie': cookie
+            }  
+        }
+        var req = https.request(options, function(res) {  
+            // console.log('Status:', res.statusCode);  
+            // console.log('headers:', JSON.stringify(res.headers));  
+            res.setEncoding('utf-8');  
+            res.on('data', function(chun) {  
+                // get data
+                var resJob = JSON.parse(chun);
+                var jobDetail = {
+                    jobname: resJob.jobname,
+                    jobid: resJob.jobid,
+                    url: resJob.url
+                }
+                console.log(resJob); 
+                response.send(JSON.stringify(jobDetail));
+            });  
+            res.on('end', function(err) { 
+                
+            });  
+        });    
+        req.on('error',function(err) {  
+            console.error(err);  
         });  
-        res.on('end', function(err) { 
-            
-        });  
-    });    
-    req.on('error',function(err) {  
-        console.error(err);  
-    });  
-    req.write(postData);  
-    req.end();
-    res.send('HELLO');
+        req.write(postData);  
+        req.end();
+    }   
 });
 
 // get the job status
