@@ -22,18 +22,21 @@ class ParseError extends Error {
     let body;
     switch (type) {
       case "grammar":
+        const message = hash.expected
+          ? `Expecting ${hash.expected.join(", ")} after this identifier`
+          : msg.split("\n")[0];
         body = {
           location: hash.loc || {
             first_line: hash.line + 1,
             last_line: hash.line + 1,
-            first_column: 0
+            first_column: 0,
+            last_column: 100
           },
           expected: hash.expected,
-          message: msg
-            .split("\n")
-            .slice(1, 3)
-            .join("\n")
+          message: message
         };
+        body.location.last_column =
+          body.location.last_column == 0 ? 100 : body.location.last_column;
         break;
       case "define":
         body = {
@@ -60,7 +63,7 @@ class ParseError extends Error {
 export default class Parser {
   constructor() {
     this.parser = parser;
-    this.error = null;
+    this.errors = [];
     this.initGrammarError();
   }
 
@@ -71,15 +74,17 @@ export default class Parser {
   }
 
   parse(source) {
+    this.errors = [];
     try {
       const asts = this.parser.parse(source);
-      asts.forEach(ast => {
+      for (let i = 0; i < asts.length; ++i) {
+        const ast = asts[i];
+        console.log(ast);
         ast.meta = this.parseMeta(ast);
         this.parseArgs(ast.meta, ast.children);
-      });
-      this.error = null;
+      }
     } catch (err) {
-      this.error = err.body;
+      this.errors.push(err.body);
     }
   }
 
