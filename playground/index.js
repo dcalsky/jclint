@@ -1,4 +1,5 @@
 import fs from "fs";
+import vex from "vex-js";
 import debounce from "lodash/debounce";
 import CodeMirror from "codemirror";
 import Parser from "../src/jcl.parser";
@@ -7,8 +8,16 @@ import "codemirror/lib/codemirror.css";
 import "./styles/3024-day.css";
 import "codemirror/addon/lint/lint.css";
 import "./styles/main.less";
+import "vex-js/dist/css/vex.css";
+import "vex-js/dist/css/vex-theme-plain.css";
+import axios from "axios";
+
+vex.registerPlugin(require("vex-dialog"));
+vex.defaultOptions.className = "vex-theme-plain";
 
 const correctMessage = "All going well!";
+const URL = process.env.URL || "http://localhost:8084";
+
 class Editor {
   constructor(editorId, outputId, options) {
     const codeEditorOptions = {
@@ -29,7 +38,7 @@ class Editor {
       codeEditorOptions
     );
     this.$gutter = document.querySelector(".CodeMirror-gutters");
-    this.initEvents();
+    this.initEvents(options);
   }
   validate() {
     this.clear_marks();
@@ -75,16 +84,54 @@ class Editor {
     this.outputContainer.updateTitleContent(message);
     this.outputContainer.show();
   }
-  initEvents() {
+  initEvents(options) {
     this.outputContainer = new Tooltip(this.$output, {
       title: correctMessage,
       trigger: "click"
     });
     this.outputContainer.show();
     this.codeEditor.on("changes", debounce(this.validate.bind(this), 500));
+
+    if (options.upload) {
+      this.$upload = document.getElementById(options.upload);
+      this.$upload.addEventListener("click", e => {
+        e.preventDefault();
+        this.open_upload_dialog();
+      });
+    }
+  }
+  open_upload_dialog() {
+    vex.dialog.open({
+      message: "Enter your username and password:",
+      input: [
+        '<input name="username" type="text" placeholder="Username" required />',
+        '<input name="password" type="password" placeholder="Password" required />'
+      ].join(""),
+      callback: data => {
+        if (data) {
+          this.send_job({
+            username: data.username,
+            password: data.password,
+            job: this.codeEditor.getValue()
+          });
+        }
+      }
+    });
+  }
+  send_job(data) {
+    axios
+      .post(`${URL}/zos/job`, data)
+      .then(res => {
+        this.update_output_message("Uploaded successfully!");
+      })
+      .catch(err => {
+        this.update_output_message("Uploaded failed!");
+      });
   }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  const editor = new Editor("editor", "watermelon");
+  const editor = new Editor("editor", "watermelon", {
+    upload: "upload"
+  });
 });
