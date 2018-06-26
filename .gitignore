@@ -129,5 +129,4 @@ $RECYCLE.BIN/
 !dist/.gitkeep
 src/jcl.js
 jcl.js
-
-.cache
+playground/.cache/
