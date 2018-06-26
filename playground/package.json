@@ -8,10 +8,12 @@
     "start": "rm -r .cache && parcel ./index.html"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "codemirror": "^5.39.0",
     "less": "^3.0.4",
     "lodash": "^4.17.10",
-    "tooltip.js": "^1.2.0"
+    "tooltip.js": "^1.2.0",
+    "vex-js": "^4.1.0"
   },
   "devDependencies": {
     "parcel": "^1.9.2"
