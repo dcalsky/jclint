@@ -2,20 +2,23 @@
 
 %%
 
-'/*'                                ;
-\/\/\*.*                            ; /* skip whole line comment */
-[\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
-\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s   return 'DEFINE';
-'='                                 return '=';
-','                                 return ',';
-'('                                 return '(';
-')'                                 return ')';
-\'                                  return 'SQUOTE';
-\"                                  return 'DQUOTE';
-\n\/\/\s+                           return 'LINE_FEED';
-\n                                  return 'NEWLINE'
-\s.*                                ;
-<<EOF>>                             return 'EOF';
+'/*'                                  ;
+\/\/\*.*                              ; /* skip whole line comment */
+[\"\'][A-Z\$\#]+(\,[A-Z\$\#]+)?[\"\'] yytext = yytext.substr(1,yyleng-2); return 'STRING';
+[\#\$\@\.A-Z0-9\*\&]+                 return 'IDENT';
+\/\/[A-Z\$\#][A-Z0-9\.\#]+\s+\w+\s+   return 'DEFINE';
+\/\/                                  ; /* define end */
+'='                                   return '=';
+','                                   return ',';
+'*'                                   return '*';
+\'                                    return 'SQUOTE';
+\"                                    return 'DQUOTE';
+'('                                   return '(';
+')'                                   return ')';
+\n\/\/\s+                             return 'LINE_FEED';
+\n                                    return 'NEWLINE';
+\s.*                                  ;
+<<EOF>>                               return 'EOF';
 
 
 /lex
@@ -32,8 +35,7 @@ e
     | DEFINE ARGS {$$ = [{
         meta: $1,
         children: $2,
-        position: @1
-        :
+        location: @1
     }]}
     |
     ;
@@ -66,7 +68,7 @@ KW
     : IDENT '=' ARG {$$ = [{
         key: $1,
         val: $3,
-        position: @1
+        location: @1
     }]}
     ;
 
@@ -91,12 +93,15 @@ TUPLE
     | {$$ = [null]}
     ;
 
-
 VAL
     : SQUOTE IDENT SQUOTE {$$ = $1}
     | DQUOTE IDENT DQUOTE {$$ = $1}
+    | STRING {$$ = {
+      text: $1,
+      location: @1
+    }}
     | IDENT {$$ = {
       text: $1,
-      position: @1
+      location: @1
     }}
     ;

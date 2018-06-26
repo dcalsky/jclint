@@ -1,16 +1,17 @@
 //ST037A JOB ACCT#,'TRAINER',CLASS=A,NOTIFY=&SYSUID,
-//           MSGCLASS=A,MSGLEVEL=(1,1),TIME=1
+//           MSGCLASS=A,MSGLEVEL=(1,1)
 //STEP1    EXEC PGM=IDCAMS                          
 //SYSPRINT DD SYSOUT=*                              
-//SYSIN DD *                        
+//SYSIN DD *                                     
+  DELETE 'ST037.VSAM.KSDS0'                         
   SET MAXCC = 0                                     
   DEFINE CLUSTER -                                  
             (NAME(ST037.VSAM.KSDS0) -               
             INDEXED -                               
-            VOLUME(BYWK00) -                         
+            VOLUME(USER02)-                         
             RECORDS(4000,100) -                     
             RECORDSIZE(80 80) -                     
             CONTROLINTERVALSIZE(4096) -             
-            KEYS(5,4))
-   LISTCAT ENT(ST037.VSAM.KSDS0) ALL
+            KEYS(5,4))                              
+   LISTCAT ENT(ST037.VSAM.KSDS0) ALL                                                                 
 //

@@ -16,7 +16,7 @@ vex.registerPlugin(require("vex-dialog"));
 vex.defaultOptions.className = "vex-theme-plain";
 
 const correctMessage = "All going well!";
-const URL = process.env.URL || "http://localhost:8083";
+const URL = process.env.URL || "http://localhost:8080";
 
 class Editor {
   constructor(editorId, outputId, options) {
@@ -44,7 +44,8 @@ class Editor {
     this.clear_marks();
     this.parser.parse(this.codeEditor.getValue());
     const errors = this.parser.errors;
-    if (errors.length !== 0) {
+    console.log(errors)
+    if (errors.length !== 0 && errors[0].location !== undefined) {
       this.toggle_gutter_error(true);
       this.handleErrors(errors);
     } else {
