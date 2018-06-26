@@ -2,20 +2,21 @@
 
 %%
 
-'/*'                                ;
-\/\/\*.*                            ; /* skip whole line comment */
-[\'\"\#\$\@\.A-Z0-9\*]+             return 'IDENT';
-\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s   return 'DEFINE';
-'='                                 return '=';
-','                                 return ',';
-'('                                 return '(';
-')'                                 return ')';
-\'                                  return 'SQUOTE';
-\"                                  return 'DQUOTE';
-\n\/\/\s+                           return 'LINE_FEED';
-\n                                  return 'NEWLINE'
-\s.*                                ;
-<<EOF>>                             return 'EOF';
+'/*'                                        ;
+\/\/\*.*                                    ; /* skip whole line comment */
+[\'\"\#\$\@\.A-Z0-9\*]+                     return 'IDENT';
+\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s           return 'DEFINE';
+\*\s+                                       return '';
+'='                                         return '=';
+','                                         return ',';
+'('                                         return '(';
+')'                                         return ')';
+\'                                          return 'SQUOTE';
+\"                                          return 'DQUOTE';
+\n\/\/\s+                                   return 'LINE_FEED';
+\n                                          return 'NEWLINE'
+\s.*                                        ;
+<<EOF>>                                     return 'EOF';
 
 
 /lex
@@ -32,7 +33,7 @@ e
     | DEFINE ARGS {$$ = [{
         meta: $1,
         children: $2,
-        position: @1
+        location: @1
     }]}
     |
     ;
@@ -65,7 +66,7 @@ KW
     : IDENT '=' ARG {$$ = [{
         key: $1,
         val: $3,
-        position: @1
+        location: @1
     }]}
     ;
 
@@ -96,7 +97,7 @@ VAL
     | DQUOTE IDENT DQUOTE {$$ = $1}
     | IDENT {$$ = {
       text: $1,
-      position: @1
+      location: @1
     }}
     ;
 
