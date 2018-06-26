@@ -5,19 +5,6 @@
   "author": "dcalsky",
   "license": "MIT",
   "scripts": {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> server
-    "start": "parcel ./index.html"
-  },
-  "dependencies": {
-    "codemirror": "^5.39.0",
-    "less": "^3.0.4",
-    "lodash": "^4.17.10"
-<<<<<<< HEAD
-=======
-=======
     "start": "rm -r .cache && parcel ./index.html"
   },
   "dependencies": {
@@ -29,8 +16,6 @@
     "lodash": "^4.17.10",
     "querystring": "^0.2.0",
     "tooltip.js": "^1.2.0"
->>>>>>> 277a1cfdd91b86e4807f53aab10a7d1e170ba358
->>>>>>> server
   },
   "devDependencies": {
     "parcel": "^1.9.2"
