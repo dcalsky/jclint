@@ -9,13 +9,15 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "axios": "^0.18.0",
     "codemirror": "^5.39.0",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "less": "^3.0.4",
     "lodash": "^4.17.10",
     "querystring": "^0.2.0",
-    "tooltip.js": "^1.2.0"
+    "tooltip.js": "^1.2.0",
+    "vex-js": "^4.1.0"
   },
   "devDependencies": {
     "parcel": "^1.9.2"
