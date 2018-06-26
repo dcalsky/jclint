@@ -5,7 +5,7 @@
   "author": "dcalsky",
   "license": "MIT",
   "scripts": {
-    "start": "parcel ./index.html"
+    "start": "rm -r .cache && parcel ./index.html"
   },
   "dependencies": {
     "codemirror": "^5.39.0",
