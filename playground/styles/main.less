@@ -13,6 +13,11 @@ body {
   position: absolute;
   right: 50px;
   bottom: 50px;
+  z-index: 100;
+
+  img {
+    width: 20vw;
+  }
 }
 
 .CodeMirror {
@@ -28,18 +33,19 @@ body {
 }
 
 .CodeMirror .CodeMirror-gutters {
-  width: 50px;
+  text-align: right;
+  width: 10vw;
 }
 
 .CodeMirror .CodeMirror-linenumber {
-  color: #d4cebd;
+  color: white;
 }
 
 .error {
-  background: rgba(220, 50, 47, 0.1) !important;
+  background: rgba(220, 50, 47, 0.3) !important;
   z-index: 4;
 }
 
 .error-line {
-    background: #D32F2F !important; 
+  background: #d32f2f !important;
 }
