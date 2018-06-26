@@ -16,7 +16,7 @@ vex.registerPlugin(require("vex-dialog"));
 vex.defaultOptions.className = "vex-theme-plain";
 
 const correctMessage = "All going well!";
-const URL = process.env.URL || "http://localhost:8084";
+const URL = process.env.URL || "http://localhost:8083";
 
 class Editor {
   constructor(editorId, outputId, options) {
@@ -118,13 +118,44 @@ class Editor {
       }
     });
   }
+  observer(data) {
+    var timesRun = 0;
+    var that = this
+    var interval = setInterval(function() {
+      timesRun += 1;
+      if(timesRun === 10){
+        clearInterval(interval);
+      }
+      console.log(data)
+      axios
+        .post(`${URL}/zos/job/status`, data)
+        .then(res => {
+          if (res != null) {
+            clearInterval(interval);
+            that.update_output_message(res.data);
+          }
+        })
+        .catch(err => {
+          clearInterval(interval);
+          that.update_output_message(err);
+        });
+      //do whatever here..
+    }, 3000);
+  }
   send_job(data) {
     axios
       .post(`${URL}/zos/job`, data)
       .then(res => {
         this.update_output_message("Uploaded successfully!");
+        var d = res.data
+        this.observer({
+          username: data.username,
+          password: data.password,
+          url: d.url
+        })
       })
       .catch(err => {
+        console.log(err)
         this.update_output_message("Uploaded failed!");
       });
   }
