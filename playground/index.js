@@ -14,7 +14,8 @@ class Editor {
       lineNumbers: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-lint-markers"],
       theme: "3024-day",
-      lint: true
+      lint: true,
+      styleSelectedText: true
     };
     this.lineHandles = [];
     this.parser = new Parser();

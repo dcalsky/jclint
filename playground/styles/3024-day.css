@@ -96,3 +96,8 @@
   text-decoration: underline;
   color: #a16a94 !important;
 }
+
+.CodeMirror-selected {
+  background-color: #B0ECB7 !important;
+}
+
