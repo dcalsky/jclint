@@ -1,0 +1,6 @@
+//ST008T4 JOB ACCT#,TIME=2,                         
+//          NOTIFY=ST008,                           
+//          MSGLEVEL=(1,1)                          
+//STEP1 EXEC PROC=IGYWCLG                           
+//COBOL.SYSIN DD DSN=ST008.COBOL4,DISP=SHR
+//GO.INFILE DD DSN=ST008.STRINGDA,DISP=SHR

@@ -1,3 +1,4 @@
+import fs from "fs";
 import debounce from "lodash/debounce";
 import CodeMirror from "codemirror";
 import Parser from "../src/jcl.parser";
@@ -8,19 +9,24 @@ import "./styles/main.less";
 
 class Editor {
   constructor(editorId, outputId, options) {
-    this.lineHandles = [];
-    const $container = document.getElementById(editorId);
     const codeEditorOptions = {
       lineNumbers: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-lint-markers"],
       theme: "3024-day",
       lint: true
     };
+    this.lineHandles = [];
     this.parser = new Parser();
-    this.codeEditor = CodeMirror.fromTextArea($container, codeEditorOptions);
-    this.$gutter = document.querySelector(".CodeMirror-gutters");
+    this.$container = document.getElementById(editorId);
     this.$output = document.getElementById(outputId);
-    this.initialize();
+
+    this.$container.value = fs.readFileSync("./sample", "utf8");
+    this.codeEditor = CodeMirror.fromTextArea(
+      this.$container,
+      codeEditorOptions
+    );
+    this.$gutter = document.querySelector(".CodeMirror-gutters");
+    this.initEvents();
   }
   validate() {
     this.clear_marks();
@@ -60,7 +66,7 @@ class Editor {
   toggle_gutter_error(status = true) {
     this.$gutter.classList.toggle("error", status);
   }
-  initialize() {
+  initEvents() {
     this.codeEditor.on("changes", debounce(this.validate.bind(this), 500));
   }
 }
