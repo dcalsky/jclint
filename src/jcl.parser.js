@@ -1,73 +1,79 @@
-import { parser } from "../dist/jcl";
-const JCL_TYPE = ["JOB", "EXEC", "DD"];
+import { parser } from '../dist/jcl';
+
+const JCL_TYPE = ['JOB', 'EXEC', 'DD'];
 const KWS = {
   JOB: [
-    "ADDRSPC",
-    "BYTES",
-    "CLASS",
-    "MSGCLASS",
-    "MSGLEVEL",
-    "NOTIFY",
-    "PRTY",
-    "REGION",
-    "TIME",
-    "TYPRUN"
+    'ADDRSPC',
+    'BYTES',
+    'CLASS',
+    'MSGCLASS',
+    'MSGLEVEL',
+    'NOTIFY',
+    'PRTY',
+    'REGION',
+    'TIME',
+    'TYPRUN',
   ],
-  EXEC: ["PGM", "PROC", "ACCT", "ADDRSPC", "REGION", "TIME", "COND", "PARM"],
+  EXEC: ['PGM', 'PROC', 'ACCT', 'ADDRSPC', 'REGION', 'TIME', 'COND', 'PARM'],
   DD: [
-    "UNIT",
-    "VOLUME",
-    "SPACE",
-    "DISP",
-    "DCB",
-    "SYSOUT",
-    "SYSIN",
-    "DSNAME",
-    "JOBCAT",
-    "JOBLIB",
-    "STEPCAT",
-    "STEPLIB",
-    "DSN",
-    "DSNAME"
-  ]
+    'UNIT',
+    'VOLUME',
+    'SPACE',
+    'DISP',
+    'DCB',
+    'SYSOUT',
+    'SYSIN',
+    'DSNAME',
+    'JOBCAT',
+    'JOBLIB',
+    'STEPCAT',
+    'STEPLIB',
+    'DSN',
+    'DSNAME',
+  ],
 };
 
 class ParseError extends Error {
   constructor(type, msg, hash) {
-    super("Parsing error");
+    super('Parsing error');
     let body;
     switch (type) {
-      case "grammar":
+      case 'grammar': {
         const message = hash.expected
-          ? `Expecting ${hash.expected.join(", ")} after this identifier`
-          : msg.split("\n")[0];
+          ? `Expecting ${hash.expected.join(', ')} after this identifier`
+          : msg.split('\n')[0];
+        const lastColumn = body.location.last_column;
         body = {
           location: hash.loc || {
             first_line: hash.line + 1,
             last_line: hash.line + 1,
             first_column: 0,
-            last_column: 100
+            last_column: 100,
           },
           expected: hash.expected,
-          message: message
+          message,
         };
-        body.location.last_column =
-          body.location.last_column == 0 ? 100 : body.location.last_column;
+        body.location.last_column = lastColumn === 0 ? 100 : lastColumn;
         break;
-      case "define":
+      }
+      case 'define': {
         body = {
           location: hash,
-          message: msg
+          message: msg,
         };
         break;
-      case "keyword":
+      }
+      case 'keyword': {
         body = {
           location: hash.location,
           key: hash.key,
           expected: hash.expected,
-          message: msg
+          message: msg,
         };
         break;
+      }
+      default:
+        return;
     }
     body.type = type;
     this.body = body;
@@ -84,8 +90,8 @@ export default class Parser {
   }
 
   initGrammarError() {
-    this.parser.yy.parseError = function(msg, hash) {
-      throw new ParseError("grammar", msg, hash);
+    this.parser.yy.parseError = (msg, hash) => {
+      throw new ParseError('grammar', msg, hash);
     };
   }
 
@@ -93,9 +99,9 @@ export default class Parser {
     this.errors = [];
     try {
       const asts = this.parser.parse(source);
-      for (let i = 0; i < asts.length; ++i) {
+      for (let i = 0; i < asts.length; i += 1) {
         const ast = asts[i];
-        ast.meta = this.parseMeta(ast);
+        ast.meta = Parser.parseMeta(ast);
         this.parseArgs(ast.meta, ast.children);
       }
     } catch (err) {
@@ -108,51 +114,47 @@ export default class Parser {
     if (children.kw_args) this.parseKeywordArgs(meta, children.kw_args);
   }
 
-  parsePositionArgs(meta, ps_args) {
-    ps_args.forEach(item => {});
+  static parsePositionArgs(meta, psArgs) {
+    psArgs.forEach(() => {});
   }
 
-  parseKeywordArgs(meta, kw_args) {
+  static parseKeywordArgs(meta, kwArgs) {
     const exceptedKeywords = KWS[meta.type];
-    kw_args.forEach(item => {
+    kwArgs.forEach((item) => {
       if (!exceptedKeywords.includes(item.key)) {
         throw new ParseError(
-          "keyword",
+          'keyword',
           `${item.key} is unexcepted as a keyword in ${meta.type} operator`,
           {
             location: item.location,
             key: item.key,
-            expected: exceptedKeywords
-          }
+            expected: exceptedKeywords,
+          },
         );
       }
     });
   }
 
-  parseMeta(ast) {
-    const meta = this._getMeta(ast.meta);
-    if (!meta.name.split(".").every(name => name.length <= 8)) {
+  static parseMeta(ast) {
+    const meta = Parser.getMeta(ast.meta);
+    if (!meta.name.split('.').every(name => name.length <= 8)) {
       throw new ParseError(
-        "define",
-        "Name length cannot be longer than 8 characters",
-        ast.location
+        'define',
+        'Name length cannot be longer than 8 characters',
+        ast.location,
       );
     } else if (!JCL_TYPE.includes(meta.type)) {
-      throw new ParseError(
-        "define",
-        "Unrecognized operator type",
-        ast.location
-      );
+      throw new ParseError('define', 'Unrecognized operator type', ast.location);
     }
     return meta;
   }
 
-  _getMeta(rawMeta) {
+  static getMeta(rawMeta) {
     const pureMeta = rawMeta.slice(2);
-    const items = pureMeta.split(" ");
+    const items = pureMeta.split(' ');
     return {
       name: items[0],
-      type: items[1]
+      type: items[1],
     };
   }
 }
