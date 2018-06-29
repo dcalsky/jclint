@@ -73,7 +73,7 @@ class ParseError extends Error {
         break;
       }
       default:
-        return;
+        break;
     }
     body.type = type;
     this.body = body;
@@ -102,16 +102,16 @@ export default class Parser {
       for (let i = 0; i < asts.length; i += 1) {
         const ast = asts[i];
         ast.meta = Parser.parseMeta(ast);
-        this.parseArgs(ast.meta, ast.children);
+        Parser.parseArgs(ast.meta, ast.children);
       }
     } catch (err) {
       this.errors.push(err.body);
     }
   }
 
-  parseArgs(meta, children) {
-    if (children.ps_args) this.parsePositionArgs(meta, children.ps_args);
-    if (children.kw_args) this.parseKeywordArgs(meta, children.kw_args);
+  static parseArgs(meta, children) {
+    if (children.ps_args) Parser.parsePositionArgs(meta, children.ps_args);
+    if (children.kw_args) Parser.parseKeywordArgs(meta, children.kw_args);
   }
 
   static parsePositionArgs(meta, psArgs) {
@@ -151,7 +151,7 @@ export default class Parser {
 
   static getMeta(rawMeta) {
     const pureMeta = rawMeta.slice(2);
-    const items = pureMeta.split(' ');
+    const items = pureMeta.split(/\s+/);
     return {
       name: items[0],
       type: items[1],

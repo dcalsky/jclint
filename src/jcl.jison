@@ -2,21 +2,23 @@
 
 %%
 
-'/*'                                        ;
-\/\/\*.*                                    ; /* skip whole line comment */
-[\'\"\#\$\@\.A-Z0-9\*]+                     return 'IDENT';
-\/\/[A-Z\$\#][A-Z0-9\.\#]+\s\w+\s           return 'DEFINE';
-\*\s+                                       return '';
-'='                                         return '=';
-','                                         return ',';
-'('                                         return '(';
-')'                                         return ')';
-\'                                          return 'SQUOTE';
-\"                                          return 'DQUOTE';
-\n\/\/\s+                                   return 'LINE_FEED';
-\n                                          return 'NEWLINE'
-\s.*                                        ;
-<<EOF>>                                     return 'EOF';
+'/*'                                  ;
+\/\/\*.*                              ; /* skip whole line comment */
+[\"\'][A-Z\$\#]+(\,[A-Z\$\#]+)?[\"\'] yytext = yytext.substr(1,yyleng-2); return 'STRING';
+[\#\$\@\.A-Z0-9\*\&]+                 return 'IDENT';
+\/\/[A-Z\$\#][A-Z0-9\.\#]+\s+\w+\s+   return 'DEFINE';
+(\/\/|\/\*)\n*                        ; /* define end */
+'='                                   return '=';
+','                                   return ',';
+'*'                                   return '*';
+\'                                    return 'SQUOTE';
+\"                                    return 'DQUOTE';
+'('                                   return '(';
+')'                                   return ')';
+\n\/\/\s+                             return 'LINE_FEED';
+\n                                    return 'NEWLINE';
+\s.*                                  ;
+<<EOF>>                               return 'EOF';
 
 
 /lex
@@ -91,13 +93,15 @@ TUPLE
     | {$$ = [null]}
     ;
 
-
 VAL
     : SQUOTE IDENT SQUOTE {$$ = $1}
     | DQUOTE IDENT DQUOTE {$$ = $1}
+    | STRING {$$ = {
+      text: $1,
+      location: @1
+    }}
     | IDENT {$$ = {
       text: $1,
       location: @1
     }}
     ;
-
